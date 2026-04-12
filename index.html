@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Event Finder</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f5f5;
+}
+
+header {
+    background: #007bff;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.controls {
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+input, select, button {
+    padding: 8px;
+    font-size: 14px;
+}
+
+#container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 15px;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.hidden {
+    display: none;
+}
+
+.dark {
+    background: #121212;
+    color: white;
+}
+
+.dark .card {
+    background: #1e1e1e;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>🎟️ Event Finder</h1>
+<button onclick="toggleDarkMode()">🌙</button>
+</header>
+
+<section class="controls">
+
+<input 
+type="text" 
+placeholder="Search events..."
+oninput="searchEvents(this.value)"
+>
+
+<select onchange="filterByCity(this.value)">
+<option value="">All Cities</option>
+<option value="Delhi">Delhi</option>
+<option value="Mumbai">Mumbai</option>
+<option value="Bangalore">Bangalore</option>
+</select>
+
+<button onclick="sortByName()">Sort A-Z</button>
+
+</section>
+
+<div id="loading" class="hidden">Loading events...</div>
+
+<div id="container"></div>
+
+<script src="script.js"></script>
+
+<script>
+
+
+const events = [
+{name:"Music Concert", city:"Delhi"},
+{name:"Tech Conference", city:"Bangalore"},
+{name:"Art Exhibition", city:"Mumbai"},
+{name:"Startup Meetup", city:"Delhi"},
+{name:"Food Festival", city:"Mumbai"}
+]
+
+let filteredEvents = [...events]
+
+function displayEvents(data){
+document.getElementById("container").innerHTML =
+data.map(e=>`
+<div class="card">
+<h3>${e.name}</h3>
+<p>${e.city}</p>
+</div>
+`).join("")
+}
+
+function searchEvents(text){
+filteredEvents = events.filter(e=>
+e.name.toLowerCase().includes(text.toLowerCase())
+)
+displayEvents(filteredEvents)
+}
+
+function filterByCity(city){
+filteredEvents = city ?
+events.filter(e=>e.city===city)
+: events
+
+displayEvents(filteredEvents)
+}
+
+function sortByName(){
+filteredEvents.sort((a,b)=>
+a.name.localeCompare(b.name)
+)
+displayEvents(filteredEvents)
+}
+
+function toggleDarkMode(){
+document.body.classList.toggle("dark")
+}
+
+displayEvents(events)
+
+</script>
+
+</body>
+</html>
